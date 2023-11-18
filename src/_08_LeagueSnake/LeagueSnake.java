@@ -1,5 +1,7 @@
 package _08_LeagueSnake;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 
 public class LeagueSnake extends PApplet {
@@ -15,6 +17,9 @@ public class LeagueSnake extends PApplet {
     Segment head;
     int foodX;
     int foodY;
+    int direction = DOWN;
+    int eaten;
+    ArrayList<Segment> tail = new ArrayList<Segment>();
 
     
     /*
@@ -31,7 +36,7 @@ public class LeagueSnake extends PApplet {
     @Override
     public void setup() {
         head = new Segment(0,0);
-        frameRate(20);
+        frameRate(5);
         dropFood();
     }
 
@@ -51,7 +56,9 @@ public class LeagueSnake extends PApplet {
     public void draw() {
     	background(16,11,36);
         drawFood();
+        move();
         drawSnake();
+        eat();
     }
 
     void drawFood() {
@@ -63,12 +70,20 @@ public class LeagueSnake extends PApplet {
 
     void drawSnake() {
         // Draw the head of the snake followed by its tail
-    	fill(8, 105, 50);
+    	fill(116, 235, 52);
     	rect(head.x,head.y,10,10);
+    	drawTail();
+    	
     }
+   
 
     void drawTail() {
         // Draw each segment of the tail
+    	for(int i = 0; i<tail.size();i++) {
+    		Segment temp = tail.get(i);
+    		fill(116,235,52);
+    		rect(temp.x, temp.y, 10, 10);
+    	}
         
     }
 
@@ -99,35 +114,79 @@ public class LeagueSnake extends PApplet {
     @Override
     public void keyPressed() {
         // Set the direction of the snake according to the arrow keys pressed
+    	
+    	if(keyCode == UP) {
+    		direction = UP;
+    		
+    	}
+    	if(keyCode == DOWN) {
+    		direction = DOWN;
+    		
+    	}
+    	if(keyCode == RIGHT) {
+    		direction = RIGHT;
+    		
+    	}
+    	if(keyCode == LEFT) {
+    		direction = LEFT;
+    		
+    	}
+    	
         
     }
+    
 
     void move() {
         // Change the location of the Snake head based on the direction it is moving.
-
-        /*
+    
+    	checkBoundaries();
         if (direction == UP) {
             // Move head up
+        	head.y-=10;
             
         } else if (direction == DOWN) {
             // Move head down
+        	head.y += 10;
                 
         } else if (direction == LEFT) {
+        	head.x -= 10;
+        	
             
         } else if (direction == RIGHT) {
+        	head.x += 10;
+        
             
         }
-        */
+        
+        
+       
     }
 
     void checkBoundaries() {
         // If the snake leaves the frame, make it reappear on the other side
+    	if(head.x > 500) {
+    		head.x = 0;
+    	}
+    	else if(head.x < 0) {
+    		head.x = 500;
+    	}
+    	if(head.y > 500 ) {
+    		head.y = 0;
+    	}
+    	else if(head.y < 0 ) {
+    		head.y=500;
+    	}
         
     }
 
     void eat() {
         // When the snake eats the food, its tail should grow and more
         // food appear
+    	if(head.x == foodX && head.y == foodY) {
+    		eaten+=1; 
+    		dropFood();
+    		tail.add(new Segment(head.x, head.y));
+    	}
         
     }
 
